@@ -1,0 +1,52 @@
+include ../Makefile.unix.inc.orbix.solaris
+
+#--------
+# Set OB_JAR to the full path for the "OB.jar" file
+#--------
+OB_JAR =		/path/to/OOC/lib\OB.jar
+
+
+PORTABLE_SRC=	\
+		com/iona/corbautil/PoaUtilityException.java	\
+		com/iona/corbautil/LabelledPOAManager.java	\
+		com/iona/corbautil/PoaUtility.java	\
+		com/iona/corbautil/PoaUtilityPortableImpl.java \
+		com/iona/corbautil/ImportExport.java \
+		com/iona/corbautil/ImportExportAlgorithm.java \
+		com/iona/corbautil/ImportExportException.java \
+		com/iona/corbautil/ExportCorbalocServer.java \
+		com/iona/corbautil/ImportExportExampleAlgorithm.java
+
+ORBIX_SRC=	\
+		com/iona/corbautil/LabelledOrbixWorkQueue.java	\
+		com/iona/corbautil/PoaUtilityOrbixImpl.java \
+		com/iona/corbautil/ExportCorbalocServerOrbix.java
+
+ORBACUS_SRC=	\
+		com/iona/corbautil/PoaUtilityOrbacusImpl.java \
+		com/iona/corbautil/ExportCorbalocServerOrbacus.java
+
+all:	portable orbacus orbix jar javadoc
+
+jar:
+	jar cf ../corbautil.jar com/iona/corbautil/*.class
+
+orbix:	
+	it_javac $(ORBIX_SRC)
+
+portable:
+	it_javac $(PORTABLE_SRC)
+
+orbacus:
+	javac -bootclasspath $(OB_JAR):$(JAVA_HOME)\jre\lib\rt.jar \
+				$(ORBACUS_SRC)
+
+javadoc:
+	-mkdir ../javadoc
+	javadoc -d ../javadoc \
+		-classpath "$(OB_JAR):$(ORBIX_JAVADOC_CP):$(CLASSPATH)" \
+		-sourcepath . \
+		com/iona/corbautil/*.java
+
+clean:
+	-rm com/iona/corbautil/*.class

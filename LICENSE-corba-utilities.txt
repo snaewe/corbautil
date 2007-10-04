@@ -1,0 +1,8 @@
+The following copyright applies to everything in the CORBA Utilites
+package EXCEPT for Chapter 7 ("Generic Synchronization Policies in C++")
+of the documentation and its accompanying software (in the "cxx/gsp"
+sub-directory).
+
+
+Copyright 1998-2007 IONA Technologies PLC. All rights reserved.
+This software and documentation are provided "as is".

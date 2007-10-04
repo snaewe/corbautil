@@ -1,0 +1,137 @@
+#-----------------------------------------------------------------------
+# Copyright IONA Technologies 2002-2005. All rights reserved.
+# This software is provided "as is".
+#-----------------------------------------------------------------------
+
+#--------
+# Set the next line to point to this top-level directory
+#--------
+CORBA_UTIL_ROOT=	C:\corbautil
+
+#--------
+# Where Java is installed (ignore this if you are not using Java parts
+# of CORBA Utilities)
+#--------
+JAVA_HOME =		C:\j2sdk1.4.1
+
+#--------
+# If you are using version 7.1 of the Visual C++ compiler then uncomment
+# the following line. Otherwise, leave it commented out.
+#--------
+#VC71_DIR = \vc71
+
+#--------
+# If you do not have IT_PRODUCT_DIR set as an environment variable
+# then add it below, by uncommenting the next line and making sure
+# the specified directory is correct
+#--------
+#IT_PRODUCT_DIR=	C:\iona
+
+#--------
+# If you are using "old/classic" iostreams then uncomment the
+# following lines
+#--------
+#OPT_CXX_FLAGS= /DIT_CLASSIC_IOSTREAMS /DP_USE_OLD_TYPES
+#OPT_CIOS_DIR=	\cios
+
+#--------
+# Uncomment the following lines if you are using ASP 5.1
+#--------
+#P_ORBIX_VERSION =	51
+#ART_ROOT_DIR =		$(IT_PRODUCT_DIR)\asp\5.1
+#ART_CXX_INCLUDE_DIR =	"$(ART_ROOT_DIR)\include"
+#ART_LIB_DIR =		"$(ART_ROOT_DIR)\lib$(OPT_CIOS_DIR)"
+#ART_IDL_DIR =		"$(ART_ROOT_DIR)\idl"
+#ART_JAR_FILE =		$(ART_ROOT_DIR)\lib\runtime\art.jar
+#ORBIX_JAR_DIR=$(IT_PRODUCT_DIR)\asp\5.1\lib\runtime
+#ORBIX_JAR=$(ORBIX_JAR_DIR)\art.jar;$(ORBIX_JAR_DIR)\poa.jar;
+
+#--------
+# Uncomment the following lines if you are using ASP 6.0
+#--------
+#P_ORBIX_VERSION =	60
+#ART_ROOT_DIR =		$(IT_PRODUCT_DIR)\asp\6.0
+#ART_CXX_INCLUDE_DIR =	"$(ART_ROOT_DIR)\include"
+#ART_LIB_DIR =		"$(ART_ROOT_DIR)\lib"
+#ART_IDL_DIR =		"$(ART_ROOT_DIR)\idl"
+#ART_JAR_FILE =		$(ART_ROOT_DIR)\lib\asp-corba.jar
+#ORBIX_JAR_DIR=$(IT_PRODUCT_DIR)\lib\art
+#ORBIX_JAR=$(ORBIX_JAR_DIR)\art\5\art.jar;$(ORBIX_JAR_DIR)\omg\5\omg.jar;$(IT_PRODUCT_DIR)\lib\corba\java_poa\5\poa.jar
+
+#--------
+# Uncomment the following lines if you are using Orbix 6.1
+#--------
+#P_ORBIX_VERSION =	61
+#ART_ROOT_DIR =		$(IT_PRODUCT_DIR)\asp\6.1
+#ART_CXX_INCLUDE_DIR =	"$(ART_ROOT_DIR)\include"
+#ART_LIB_DIR =		"$(ART_ROOT_DIR)\lib"
+#ART_IDL_DIR =		"$(ART_ROOT_DIR)\idl"
+#ART_JAR_FILE =		$(ART_ROOT_DIR)\lib\asp-corba.jar
+#ORBIX_JAR_DIR=$(IT_PRODUCT_DIR)\lib\art
+#ORBIX_JAR=$(ORBIX_JAR_DIR)\art\5.1\art.jar;$(ORBIX_JAR_DIR)\omg\5\omg.jar;$(IT_PRODUCT_DIR)\lib\corba\java_poa\5.1\poa.jar
+
+#--------
+# Uncomment the following lines if you are using Orbix 6.2
+#--------
+P_ORBIX_VERSION =	62
+ART_ROOT_DIR =		$(IT_PRODUCT_DIR)\asp\6.2
+ART_CXX_INCLUDE_DIR =	"$(ART_ROOT_DIR)\include$(VC71_DIR)"
+ART_LIB_DIR =		"$(ART_ROOT_DIR)\lib$(VC71_DIR)"
+ART_IDL_DIR =		"$(ART_ROOT_DIR)\idl"
+ART_JAR_FILE =		$(ART_ROOT_DIR)\lib\asp-corba.jar
+ORBIX_JAR_DIR=$(IT_PRODUCT_DIR)\lib\art
+ORBIX_JAR=$(ORBIX_JAR_DIR)\art\1.2\art.jar;$(ORBIX_JAR_DIR)\omg\1.2\omg.jar;$(IT_PRODUCT_DIR)\lib\platform\java_poa\1.2\poa.jar
+
+#--------
+# Uncomment the following lines if you are using Orbix 6.3
+#--------
+#P_ORBIX_VERSION =	63
+#ART_ROOT_DIR =		$(IT_PRODUCT_DIR)\asp\6.3
+#ART_CXX_INCLUDE_DIR =	"$(ART_ROOT_DIR)\include$(VC71_DIR)"
+#ART_LIB_DIR =		"$(ART_ROOT_DIR)\lib$(VC71_DIR)"
+#ART_IDL_DIR =		"$(ART_ROOT_DIR)\idl"
+#ART_JAR_FILE =		$(ART_ROOT_DIR)\lib\asp-corba.jar
+#ORBIX_JAR_DIR=$(IT_PRODUCT_DIR)\lib\art
+#ORBIX_JAR=$(ORBIX_JAR_DIR)\art\5\art.jar;$(ORBIX_JAR_DIR)\omg\5\omg.jar;$(IT_PRODUCT_DIR)\lib\corba\java_poa\5\poa.jar
+
+
+
+#--------
+# You should not have to change anything after this point
+#--------
+
+ORBIX_JAVADOC_CP=  $(CORBA_UTIL_ROOT)\corbautil.jar;$(ORBIX_JAR);$(CLASSPATH)
+
+
+#--------
+# C++ compiler
+#--------
+CXX=			cl
+CXXFLAGS=		-I. \
+			-I$(CORBA_UTIL_ROOT)\cxx\gsp \
+			-I$(CORBA_UTIL_ROOT)\cxx\import_export \
+			-I$(CORBA_UTIL_ROOT)\cxx\PolicyListParser \
+			-I$(CORBA_UTIL_ROOT)\cxx\PoaUtility \
+			-I$(CORBA_UTIL_ROOT)\cxx\portability \
+			-I$(ART_CXX_INCLUDE_DIR) \
+			-Zi \
+			-nologo \
+			-GR \
+			-GX \
+			-W3 \
+			-Zm200 \
+			-MD \
+			-DWIN32 \
+			$(OPT_CXX_FLAGS) \
+			-DP_USE_WIN32_THREADS \
+			-DP_USE_ORBIX \
+			-DP_ORBIX_VERSION=$(P_ORBIX_VERSION)
+
+
+#--------
+# Generic build rules
+#--------
+.SUFFIXES:		.cxx
+
+.cxx.obj:
+	$(CXX) /c $(CXXFLAGS) $<

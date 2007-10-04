@@ -1,0 +1,155 @@
+#-----------------------------------------------------------------------
+# (c) Copyright 1998-2003 IONA Technologies PLC. All rights reserved.
+#
+# File:		Makefile.unix.inc.solaris
+#-----------------------------------------------------------------------
+
+#--------
+# Select the compiler that you are using.
+# It is probably the Sun "CC" compiler, but IONA supported the G++
+# compiler in a few versions of Orbix on Solaris.
+#--------
+CXX		= CC
+#CXX		= g++
+
+
+#--------
+# Set the next line to point to where the CORBA Utilities package is installed
+#--------
+#CORBA_UTIL_ROOT=	$(HOME)/corbautil
+CORBA_UTIL_ROOT=	/local2/users/rschnir/lbbw/corbautil
+
+
+#--------
+# If you do not have IT_PRODUCT_DIR set as an environment variable
+# then add it below, by uncommenting the next line and making sure
+# the specified directory is correct
+#--------
+#IT_PRODUCT_DIR=	/opt/iona
+
+
+#--------
+# If you are using G++ then uncomment the following lines
+# and make sure that the version number is correct.
+#--------
+#GCC_VERSION=gcc295
+#GCC_SUBDIR=/$(GCC_VERSION)
+
+
+#--------
+# Uncomment the following lines if you are using Orbix 5.1
+#--------
+#P_ORBIX_VERSION =	51
+#ART_ROOT_DIR =		$(IT_PRODUCT_DIR)/asp/5.1
+#ART_CXX_INCLUDE_DIR =	$(ART_ROOT_DIR)/include$(GCC_SUBDIR)
+#ART_LIB_DIR =		$(ART_ROOT_DIR)/lib$(GCC_SUBDIR)
+#ART_IDL_DIR =		$(ART_ROOT_DIR)/idl
+#ORBIX_JAR_DIR=$(IT_PRODUCT_DIR)/asp/5.1/lib/runtime
+#ORBIX_JAR=$(ORBIX_JAR_DIR)/art.jar:$(ORBIX_JAR_DIR)/poa.jar
+
+
+#--------
+# Uncomment the following lines if you are using Orbix 6.0
+#--------
+#P_ORBIX_VERSION =	60
+#ART_ROOT_DIR =		$(IT_PRODUCT_DIR)/asp/6.0
+#ART_CXX_INCLUDE_DIR =	$(ART_ROOT_DIR)/include$(GCC_SUBDIR)
+#ART_LIB_DIR =		$(ART_ROOT_DIR)/lib$(GCC_SUBDIR)
+#ART_IDL_DIR =		$(ART_ROOT_DIR)/idl
+#ORBIX_JAR_DIR=$(IT_PRODUCT_DIR)/lib/art
+#ORBIX_JAR=$(ORBIX_JAR_DIR)/art/5/art.jar:$(ORBIX_JAR_DIR)/omg/5/omg.jar:$(IT_PRODUCT_DIR)/lib/corba/java_poa/5/poa.jar
+
+
+#--------
+# Uncomment the following lines if you are using Orbix 6.1
+#--------
+#P_ORBIX_VERSION =	61
+#ART_ROOT_DIR =		$(IT_PRODUCT_DIR)/asp/6.1
+#ART_CXX_INCLUDE_DIR =	$(ART_ROOT_DIR)/include$(GCC_SUBDIR)
+#ART_LIB_DIR =		$(ART_ROOT_DIR)/lib$(GCC_SUBDIR)
+#ART_IDL_DIR =		$(ART_ROOT_DIR)/idl
+#ORBIX_JAR_DIR=$(IT_PRODUCT_DIR)/lib/art
+#ORBIX_JAR=$(ORBIX_JAR_DIR)/art/5.1/art.jar:$(ORBIX_JAR_DIR)/omg/5/omg.jar:$(IT_PRODUCT_DIR)/lib/corba/java_poa/5.1/poa.jar
+
+
+#--------
+# Uncomment the following lines if you are using Orbix 6.2
+#--------
+#P_ORBIX_VERSION =	62
+#ART_ROOT_DIR =		$(IT_PRODUCT_DIR)/asp/6.2
+#ART_CXX_INCLUDE_DIR =	$(ART_ROOT_DIR)/include$(GCC_SUBDIR)
+#ART_LIB_DIR =		$(ART_ROOT_DIR)/lib$(GCC_SUBDIR)
+#ART_IDL_DIR =		$(ART_ROOT_DIR)/idl
+#ORBIX_JAR_DIR=$(IT_PRODUCT_DIR)/lib/art
+#ORBIX_JAR=$(ORBIX_JAR_DIR)/art/1.2/art.jar:$(ORBIX_JAR_DIR)/omg/1.2/omg.jar:$(IT_PRODUCT_DIR)/lib/platform/java_poa/1.2/poa.jar
+
+
+#--------
+# Uncomment the following lines if you are using Orbix 6.3
+#--------
+P_ORBIX_VERSION =	63
+ART_ROOT_DIR =		$(IT_PRODUCT_DIR)/asp/6.3
+ART_CXX_INCLUDE_DIR =	$(ART_ROOT_DIR)/include$(GCC_SUBDIR)
+ART_LIB_DIR =		$(ART_ROOT_DIR)/lib$(GCC_SUBDIR)
+ART_IDL_DIR =		$(ART_ROOT_DIR)/idl
+ORBIX_JAR_DIR=$(IT_PRODUCT_DIR)/lib/art
+ORBIX_JAR=$(ORBIX_JAR_DIR)/art/5/art.jar:$(ORBIX_JAR_DIR)/omg/5/omg.jar:$(IT_PRODUCT_DIR)/lib/corba/java_poa/5/poa.jar
+
+
+
+#--------
+# You should not have to change anything after this point
+#--------
+
+
+
+#--------
+# On many platforms, you can use "ar crv <name-of-library> *.o" to
+# produce a static library, and "ranlib" may or may not have to be
+# used afterwards.
+#--------
+AR		= ar
+AR_FLAGS_1	= crv
+AR_FLAGS_2	= 
+RANLIB		= /bin/true
+RANLIB_FLAGS	= 
+
+#--------
+# On Solaris, instead of using "ar", it is better to use
+# "CC -o <name-of-library> -xar *.o"
+#--------
+AR		= $(CXX)
+AR_FLAGS_1	= -o
+AR_FLAGS_2	= -xar
+RANLIB		= /bin/true
+RANLIB_FLAGS	= 
+
+
+ORBIX_JAVADOC_CP=  $(CORBA_UTIL_ROOT)/corbautil.jar:$(ORBIX_JAR):$(CLASSPATH)
+
+
+#--------
+# C++ compiler
+#--------
+CXXFLAGS=		-I. \
+			-I$(CORBA_UTIL_ROOT)/cxx/gsp \
+			-I$(CORBA_UTIL_ROOT)/cxx/import_export \
+			-I$(CORBA_UTIL_ROOT)/cxx/PolicyListParser \
+			-I$(CORBA_UTIL_ROOT)/cxx/PoaUtility \
+			-I$(CORBA_UTIL_ROOT)/cxx/portability \
+			-I$(ART_CXX_INCLUDE_DIR) \
+			-PIC \
+			-g \
+			-mt \
+			-DP_USE_SOLARIS_THREADS \
+			-DP_USE_ORBIX \
+			-DP_ORBIX_VERSION=$(P_ORBIX_VERSION)
+
+
+#--------
+# Generic build rules
+#--------
+.SUFFIXES:		.cxx
+
+.cxx.o:
+	$(CXX) -c $(CXXFLAGS) $<

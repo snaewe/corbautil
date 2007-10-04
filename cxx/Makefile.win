@@ -1,0 +1,46 @@
+#-----------------------------------------------------------------------
+# Copyright IONA Technologies 2002-2005.  All rights reserved.
+# This software is provided "as is".
+#-----------------------------------------------------------------------
+
+!include "..\Makefile.win.inc"
+
+#--------
+# Lists of files used by make rules.
+#--------
+LIB_OBJ =	\
+	  	PoaUtility\PoaUtility.obj \
+		PolicyListParser\PolicyListParser.obj \
+		import_export\import_export.obj
+
+LIB = link /lib
+
+#--------
+# Rules
+#--------
+
+default:	all
+
+all:		..\corbautil.lib
+
+..\corbautil.lib:	make_in_subdirs
+	$(LIB) /out:..\corbautil.lib $(LIB_OBJ)
+
+make_in_subdirs:
+	cd PoaUtility
+	$(MAKE) -f Makefile.win
+	cd ../PolicyListParser
+	$(MAKE) -f Makefile.win
+	cd ../import_export
+	$(MAKE) -f Makefile.win
+	cd ..
+
+clean:
+	cd PoaUtility
+	$(MAKE) -f Makefile.win clean
+	cd ../PolicyListParser
+	$(MAKE) -f Makefile.win clean
+	cd ../import_export
+	$(MAKE) -f Makefile.win clean
+	cd ..
+	-del ..\*.lib

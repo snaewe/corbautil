@@ -1,0 +1,65 @@
+#-----------------------------------------------------------------------
+# Copyright IONA Technologies 2002-2005. All rights reserved.
+# This software is provided "as is".
+#-----------------------------------------------------------------------
+
+#--------
+# Set the next line to point to this top-level directory
+#--------
+CORBA_UTIL_ROOT=	C:\corbautil
+
+#--------
+# Make sure the following settings are correct for TAO C++
+#
+# Set TAO_HOME to the full path to where you have installed TAO
+# For example, "C:\ACE_wrappers".
+#
+# Set TAO_DEBUG to "yes" if TAO was compiled with DEBUG=yes
+# Otherwise, set it to a different value, such as "no"
+#
+#--------
+TAO_HOME =		C:\ACE_wrappers
+TAO_DEBUG =		yes
+
+
+#--------
+# You should not have to change anything after this point
+#--------
+CXX=		cl
+
+!if "$(TAO_DEBUG)" == "yes"
+OPT_CXX_FLAGS=		/MDd
+!else
+OPT_CXX_FLAGS=		/MD
+!endif
+
+
+#--------
+# C++ compiler
+#--------
+CXXFLAGS=		-I. \
+	   		-I$(CORBA_UTIL_ROOT)\cxx\gsp \
+			-I$(CORBA_UTIL_ROOT)\cxx\import_export \
+	   		-I$(CORBA_UTIL_ROOT)\cxx\PolicyListParser \
+	   		-I$(CORBA_UTIL_ROOT)\cxx\PoaUtility \
+			-I$(CORBA_UTIL_ROOT)\cxx\portability \
+			-I$(TAO_HOME) \
+			-I$(TAO_HOME)\TAO \
+			/Zi \
+			/nologo \
+			/GR \
+			/GX \
+			/Gd \
+			/W3 \
+			$(OPT_CXX_FLAGS) \
+			-DWIN32 \
+			-DP_USE_TAO
+
+
+#--------
+# Generic build rules
+#--------
+.SUFFIXES:		.cxx
+
+.cxx.obj:
+	$(CXX) /c $(CXXFLAGS) $<

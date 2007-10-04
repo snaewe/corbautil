@@ -1,0 +1,69 @@
+#-----------------------------------------------------------------------
+# Copyright IONA Technologies 2002-2005. All rights reserved.
+# This software is provided "as is".
+#-----------------------------------------------------------------------
+
+
+#--------
+# Set the next line to point to where the CORBA Utilities package is installed
+#--------
+CORBA_UTIL_ROOT=	C:\corbautil
+
+
+#--------
+# Make sure the following settings are correct
+#
+# Set OMNIORB_ROOT to the full path to where you have installed omniORB
+# For example, "C:\omniORB-4.0.5".
+#
+# Set P_OMNIORB_VERSION to the version number of omniORB, expressed as 3 digits
+# For example, if you are using veriosn 4.0.5 then use "405".
+#--------
+OMNIORB_ROOT =		C:\omniORB-4.0.5
+P_OMNIORB_VERSION =     405
+
+#--------
+# If you are using "old/classic" iostreams then uncomment the
+# following lines
+#--------
+#OPT_CXX_OLD_TYPES_FLAGS= /DP_USE_OLD_TYPES
+
+
+#--------
+# You should not have to change anything after this point
+#--------
+CXX=		cl
+
+
+#--------
+# C++ compiler
+#--------
+CXXFLAGS=		-I. \
+			-I$(CORBA_UTIL_ROOT)\cxx\gsp \
+			-I$(CORBA_UTIL_ROOT)\cxx\import_export \
+			-I$(CORBA_UTIL_ROOT)\cxx\PolicyListParser \
+			-I$(CORBA_UTIL_ROOT)\cxx\PoaUtility \
+			-I$(CORBA_UTIL_ROOT)\cxx\portability \
+			-I$(OMNIORB_ROOT)\include \
+			-D__WIN32__ \
+			-D_WIN32_WINNT=0x0400 \
+			-D__x86__ \
+			-D__NT__ \
+			-D__OSVERSION__=4 \
+			/Zi \
+			/nologo \
+			/GX \
+			/MD \
+			/W2 \
+			$(OPT_CXX_FLAGS) \
+			$(OPT_CXX_OLD_TYPES_FLAGS) \
+			-DWIN32 \
+			-DP_USE_OMNIORB
+
+#--------
+# Generic build rules
+#--------
+.SUFFIXES:		.cxx
+
+.cxx.obj:
+	$(CXX) /c $(CXXFLAGS) $<

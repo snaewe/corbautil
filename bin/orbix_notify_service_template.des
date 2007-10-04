@@ -1,0 +1,110 @@
+#-----------------------------------------------------------------------
+# Copyright (c) 2002-2005 IONA Technologies. All rights reserved.
+# This software is provided "as is".
+#
+# This file is a simple Tcl script that contains assignment statements
+# (of the form "set name value"). The values in this file are then
+# used by the "orbix_srv_admin.tcl" script to execute various "itadmin"
+# commands in order to perform common adminstration tasks on an Orbix
+# server, such as (un)register it, start/stop it, and update its
+# runtime configuration variables.
+#-----------------------------------------------------------------------
+
+#--------
+# You may want to change some of the following entries.
+#
+# "user"  is a UNIX-style user name.   (ignored on Windows)
+# "group" is a UNIX-style group name.  (ignored on Windows)
+# "umask" is a UNIX-style umask.       (ignored on Windows)
+#
+# "unique_name_part" is used as a suffix on the names of the ORB,
+# log file and database directory.
+#
+# "named_key" specifies a named key (see the "named keys" section
+# in the Administration manual). This allows you to connect to
+# the Notification Service using a corbaloc URL of the form:
+#	"corbaloc:iiop:1.2@<host>:3075/<named_key>"
+#--------
+set group             "nobody"
+set user              $::tcl_platform(user); # current user
+set umask             "755"
+set unique_name_part  "[exec hostname]"
+set orb_name          "iona_services.notify_$unique_name_part"
+set named_key         "NotificationService_$unique_name_part"
+
+#--------
+# From this point onwards, everything is suitable to register
+# a non-replicated Notification Service on the current machine,
+# running as the specified user.
+#--------
+set host              [exec hostname]
+set process_name      $orb_name
+set root_poa_name     $orb_name
+set description       "Non-replicated Notification Service"
+set startup_mode      "on_demand"; # on_demand or disable
+#--------
+# File names on Windows can be expressed as "C:/full/path/to/file"
+# or as "C:\\full\\path\\to\\file"
+#--------
+set cmd_line_args     ""
+set executable        [file join $env(IT_PRODUCT_DIR) asp/5.1/bin/itnotify]
+set working_directory "/"
+if  {$::tcl_platform(platform) == "windows"} {
+	append executable ".exe"
+	set working_directory "C:/"
+}
+#--------
+# If "env_var_list" is set to an empty list "{}" then the launched
+# application inherits all the environment variables from the node
+# daemon that launched it. If "env_var_list" is not empty then the
+# launched application does not inherit any environment variables
+# from the node daemon, and instead has only the environment variables
+# listed in "env_var_list".
+#--------
+set env_var_list      {}
+#--------
+# If "node_daemon_list" contains several entries then the server
+# will be registered as a replicated server and "load_balancer"
+# specifies the load-balancing policy (random or round_robin)
+# to be used. If "node_daemon_list" contains just one entry then
+# "load_balancer" is ignored.
+#--------
+set node_daemon_list  [list iona_services.node_daemon.$host]
+set load_balancer     "random"; # random or round_robin
+
+#--------
+# Each line in poa_hierarchy is a pair of the form:
+#       lifespan full/path/to/poa-name
+# where lifespan can be one of: transient or persistent
+#--------
+set _factory "IT_NotifyChannelAdmin::EventChannelFactory"
+set poa_hierarchy [list \
+    persistent  $_factory \
+    persistent  $_factory/IT_NotificationAdmin::Manager \
+]
+
+
+#--------
+# Each line in runtime_config_variables is a triplet of the form:
+#	type name value
+# The type can be one of: long, bool, list, string or double
+# list values are comma-separated strings
+# bool values can be: true or false
+#--------
+set _var_domain_dir [file join $env(IT_PRODUCT_DIR) var/$env(IT_DOMAIN_NAME)]
+set _notify_db_dir [file join $_var_domain_dir dbs/notify_$unique_name_part]
+set _notify_log_file [file join $_var_domain_dir \
+					logs/notify_$unique_name_part.log]
+set runtime_config_variables [list \
+    string  plugins:local_log_stream:filename  $_notify_log_file \
+    string  plugins:notify:database:db_home    $_notify_db_dir \
+    string  plugins:notify:shlib_name          it_notify_svr \
+    list    event_log:filters                  IT_NOTIFICATION=* \
+    bool    plugins:notify:direct_persistence  false \
+    string  configuration:hostname             $host \
+    string  policies:iiop:server_address_mode_policy:local_hostname $host \
+    list    orb_plugins     local_log_stream,iiop_profile,giop,iiop,egmiop \
+    long    plugins:notify:iiop:port           0 \
+    string  plugins:notify:iiop:host           $host \
+ \
+]

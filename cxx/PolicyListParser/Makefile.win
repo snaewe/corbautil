@@ -1,0 +1,34 @@
+#-----------------------------------------------------------------------
+# Copyright IONA Technologies 2002-2005. All rights reserved.
+# This software is provided "as is".
+#-----------------------------------------------------------------------
+
+!include "..\..\Makefile.win.inc"
+
+CORBA_LINK_FLAGS=	/incremental:no /libpath:$(ART_LIB_DIR)
+
+CORBA_LIBS =		it_naming.lib it_poa.lib it_art.lib it_ifc.lib 
+
+SYS_LIBS =		msvcrt.lib kernel32.lib ws2_32.lib \
+			advapi32.lib user32.lib
+
+#--------
+# Lists of files used by make rules.
+#--------
+OBJ =		PolicyListParser.obj
+
+#--------
+# Rules
+#--------
+
+default:	all
+
+all:		$(OBJ)
+
+test.exe:	test.obj PolicyListParser.obj
+		link /out:test.exe $(CORBA_LINK_FLAGS) \
+			test.obj PolicyListParser.obj \
+			$(CORBA_LIBS) $(SYS_LIBS)
+
+clean:
+	-del *.obj *.pdb

@@ -1,0 +1,303 @@
+Version 2.1.6
+
+Changes since Version 2.1.5
+---------------------------
+
+o Moved the GSP classes from the IONA copyright to an MIT-style
+  copyright.
+
+o Replaced Chapter 7 ("Generic Synchronization Policies in C++")
+  with the version from the standalone GSP distribution. This new
+  version of the documentation is more concise.
+
+o There have been occasional problems in hosting the CORBA Utilities
+  package at www.iona.com, so I have moved it to www.CiaranMcHale.com.
+
+
+
+Version 2.1.5
+
+Changes since Version 2.1.4
+---------------------------
+
+o Fixed a bug in the Solaris Makefile.
+
+
+
+Version 2.1.4
+
+Changes since Version 2.1.3
+---------------------------
+
+o Added Makefile support for UNIX. Initially, this is only for Orbix on
+  Solaris, but the Makefile infrastrucure is there that allows other
+  products or operating systems to be added easily.
+
+
+
+Version 2.1.3
+
+Changes since Version 2.1.2
+---------------------------
+
+o Added Makefile support for Orbix 6.2 and Orbacus 4.1.2.
+
+
+
+Version 2.1.2
+
+Changes since Version 2.1.1
+---------------------------
+
+o exportObjRef() has been extended so that it can now take instructions
+  of the form "corbaloc_server#<name>". This causes the object to be
+  advertised through the corbaloc-server functionality of the server.
+  In turn, this allows a client to contact the object via a corbaloc
+  string of the form:
+	"corbaloc:iiop:1.2@<server-host>:<server-port>/<name>"
+  where <server-host> and <server-port> are the server's host and port,
+  and <name> is the <name> used when the server advertised the object
+  with the "corbaloc_server#<name>" instructions passed to
+  exportObjRef().
+
+  Note: unfortunately, the CORBA specification has not standardized on
+  the APIs required to provide corbaloc support in a server application.
+  Instead, each CORBA implementation provides its own, proprietary APIs
+  for this purpose. The CORBA Utilities package contains multiple
+  implementations of exportObjRef() for Orbix, Orbacus, TAO and omniORB.
+
+o Orbacus 4.2 introduced a backwards incompatible change in one of its
+  APIs that is used by the PoaUtility class. The PoaUtility has been
+  modified to make it work with both Orbacus 4.1.x and 4.2.x. The
+  changed involved use of #if...#else...#endif in the C++ implementation
+  of PoaUtility and the use of Java reflection APIs in the Java
+  implementation of PoaUtility.
+
+o The "bin" directory now contains UNIX shell script wrappers for the
+  itadmin-based Tcl scripts.
+
+
+
+Version 2.1.1
+
+Changes since Version 2.1
+-------------------------
+
+o importObjRef() and exportObjRef() have been made more flexible by now
+  supporting "name_service#<path> @ <ns-address>", where <path> is a
+  path within the Naming Service and <ns-address> is (recursively) a set
+  of import instructions. Some examples are:
+  	"name_service#x/y/z @ IOR:..."
+  	"name_service#x/y/z @ corbaloc:..."
+  	"name_service#x/y/z @ file#..."
+  	"name_service#x/y/z @ name_service#..."
+  	"name_service#x/y/z @ exec#..."
+  This allows you to import/export via a Naming Service that is
+  contacted via the <ns-address> rather than
+  resolve_initial_references().
+
+  The "name_service#<path> @ <ns-address>" format is conceptually
+  similar to a "corbaname:<ns-address>#<path>" string. However, there
+  are two important advantage of the "name_service#..." format. The
+  first advantage is that if anything goes wrong then it throws an
+  exception containing a descriptive error message, which helps you to
+  diagnose the problem. In contrast, "corbaname:..." can throw only a
+  CORBA system exception; usually, the minor code of the system
+  exception does not give much hint about what has gone wrong. The
+  second advantage of "name_service#..." is that it provides more
+  flexibility in the format of <ns-address>: the <ns-address> could be a
+  corbaloc (which is what <ns-address> is constrained to be in a
+  corbaname string), but it could also be "file#...", "exec#...",
+  "IOR:..." or even another "name_service#..." string.
+
+o If you want to embed a space in the "path/in/naming/service"
+  component of a "name_service#..." import/export directive then you
+  must now escape the space by prefixing it with "\". For example:
+  	"name_service#foo\ bar/acme"
+
+o An Orbix 3 version of importObjRef() and exportObjRef() is provided
+  in the "cxx/import_export/orbix3" sub-directory. This is provided as
+  an aid to people who are doing a piece-meal migration from Orbix 3
+  (which is a BOA-based CORBA product) to newer (POA-based) CORBA
+  products and who wish to introduce importObjRef() and exportObjRef()
+  before the migration is complete. Once the source code files are
+  provided. A Makefile is not provided. I recommend that you simply
+  copy "import_export.{h,cxx}" into the source code directory of your
+  existing Orbix 3 project and modify your Makefile to compile and link
+  it with your application.
+
+o The title page of the documentation now indicates the version number.
+
+
+
+Version 2.1
+
+Changes since Version 2.0
+-------------------------
+
+o Support has been added for omniORB. Note that omniORB 4.0.3
+  is required; the CORBA Utilities package will NOT compile with
+  earlier versions of omniORB. Thanks for Duncan Grisby for his help
+  with this port.
+
+o Rather than having a separate PDF file for each utility, all the
+  documentation has now been gathered into one book.
+
+o A new Orbix-specific utility called "orbix_ns_on_fixed_port" has been
+  added. This utility reconfigures the Naming Service so that it
+  listens on a fixed port, which makes it firewall friendly.
+  Documentation for this can be found in the "Orbix Administration Made
+  Simple" chapter of the documentation.
+
+o Some minor typos have been fixed in the documentation.
+
+
+
+Version 2.0
+
+Changes since Version 1.3.2
+---------------------------
+
+o A backwards-incompatible change has been made to the PoaUtility
+  class. In older versions of this class, a boolean parameter was
+  passed to the constructor. This boolean flag allowed one of two
+  server deployment models to be used. The new version of the class
+  allows any of four deployment models to be used. This has
+  necessitated that the boolean parameter be replaced with an "enum"
+  parameter in the C++ version, and an "int" parameter in the Java
+  version (because Java does not have "enum" types). Read the
+  "doc/PoaUtility.pdf" file for details of the new version of the
+  PoaUtility class.
+
+o Unnecessary (and hence slightly confusing) Makefile variables in the
+  "Makefile.inc.<product>" files have been removed.
+
+
+
+Version 1.3.2
+
+Changes since Version 1.3.1
+---------------------------
+
+o Perry Russell added support for TAO (an open-source CORBA implementation).
+
+
+
+Version 1.3.1
+
+Changes since Version 1.3
+-------------------------
+
+o A new Orbix administration utility called "orbix_notify_service"
+  is provided. This utility is documented in the "Orbix Administration
+  Made Simple" paper (doc/orbix_admin.pdf).
+
+
+
+Version 1.3
+
+Changes since Version 1.2.3
+---------------------------
+
+o The documentation has been reformatted into a 12pt font (it used to
+  be in 10pt). The PDF files are more compact and are hyperlinked. For
+  example, clicking on an entry in the table of contents brings you to
+  the relevant page of the document.
+
+o No new software utilities have been added, but two new documents have
+  been added:
+
+	- "The corbaloc and corbaname URLs" document (doc/corbaloc.pdf)
+	  provides an short, easy-to-understand discussion of the
+	  "corbaloc:" and "corbaname:" URL formats for CORBA object
+	  references.
+
+	- The "Tips for Windows" document (doc/tips_for_windows.pdf)
+	  provides 3 useful tips that can help people who use (MS-DOS)
+	  command windows on a PC.
+
+
+
+Version 1.2.3
+
+Changes since Version 1.2.2
+---------------------------
+
+o Changed the implementation of the ImportExport functionality so that
+  the functions do not make use of any static or instance variables.
+  Instead, all the work is done with stack-local variables. This makes
+  these functions thread-safe and also suitable for use in a multi-ORB
+  application.
+
+
+
+Version 1.2.2
+
+Changes since Version 1.2.1
+---------------------------
+
+o In the "Orbix Administration Made Simple" paper, the discussion of
+  the configuration variables for thread pools has been updated.
+
+
+
+Version 1.2.1
+
+Changes since Version 1.2
+-------------------------
+
+o ASP 6.0 has changed the integer value that is passed as a parameter to
+  orb.create_policy() when associating a work queue with a POA. The
+  source code of the PoaUtility class has been modified so that it
+  works correctly with both ASP 6.0 and previous versions of ASP.
+
+
+
+Version 1.2 
+
+Changes since Version 1.1
+-------------------------
+
+o Fixed some typos in doc/import_export.pdf.
+
+o Changed Makefile.inc.orbix to provide support for ASP 6.0
+
+
+
+Version 1.1
+
+Changes since the original (unnumbered version)
+-----------------------------------------------
+
+o The original version of CORBA Utilities package provided only
+  C++ versions of the import/export and PoaUtility classes.
+  This version also provides Java versions. Javadoc documentation
+  is provided in the top-level "javadoc" directory.
+
+o The C++ version of import/export has undergone some changes in
+  its public API:
+
+	- The import_obj_ref() function has been renamed to
+	  corbautil::importObjRef()
+
+	- The export_obj_ref() function has been renamed to
+	  corbautil::exportObjRef()
+
+	- The functions do not throw a std::string exception
+	  if anything goes wrong. Instead, they now throw a
+	  corbautil::ImportExportException.
+
+o The C++ version of the POA hierarchy utility class has undergone
+  some changes in its public API:
+
+	- The class has been renamed from poa_hierarchy_base to
+	  corbautil::PoaUtility
+
+	- Operations on this class are no longer spelled in
+	  lower_case_and_underscores(). Instead, they are spelled
+	  in mixedCapitals().
+
+	- If any errors occur in an operation on this class then
+	  it does not throw a std::string exception. Instead, it
+	  now throws a corbautil::PoaUtilityException.
+

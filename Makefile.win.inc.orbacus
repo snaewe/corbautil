@@ -1,0 +1,97 @@
+#-----------------------------------------------------------------------
+# Copyright IONA Technologies 2002-2005. All rights reserved.
+# This software is provided "as is".
+#-----------------------------------------------------------------------
+
+#--------
+# Set the next line to point to this top-level directory
+#--------
+CORBA_UTIL_ROOT=	C:\corbautil
+
+#--------
+# Set the next line to indicate the Orbacus version number as 3-digit
+# number. For exampel, "422" denotes version 4.2.2
+#--------
+P_ORBACUS_VERSION =	422
+
+#--------
+# Make sure the following settings are correct for ORBacus C++
+#
+# Set ORBACUS_HOME to the full path to where you have installed ORBacus C++
+# For example, "C:\OOC".
+#
+# Set ORBACUS_DDEBUG to "yes" if ORBacus was compiled with DEBUG=yes
+# Otherwise, set it to a different value, such as "no"
+#
+# Set ORBACUS_OLD_IOSTREAM to "yes" if ORBacus was compiled with
+# OLD_IOSTREAM=yes. Otherwise, set it to a different value, such as "no"
+#--------
+ORBACUS_HOME =		C:\OOC
+ORBACUS_DEBUG =		yes
+ORBACUS_OLD_IOSTREAM =	no
+
+
+#--------
+# Where Java is installed (ignore this if you are not using Java parts
+# of CORBA Utilities)
+#--------
+JAVA_HOME =		C:\j2sdk1.4.1
+
+#--------
+# Make sure the following settings are correct for ORBacus Java
+#
+# Set OB_JAR to the full path for the "OB.jar" file
+#--------
+OB_JAR =		C:\OOC\lib\OB.jar
+
+
+#--------
+# You should not have to change anything after this point
+#--------
+CXX=		cl
+
+!if "$(ORBACUS_OLD_IOSTREAM)" == "yes"
+OPT_P_USE_OLD_TYPES=	/DP_USE_OLD_TYPES 
+!else
+OPT_P_USE_OLD_TYPES=	
+!endif
+
+!if "$(ORBACUS_DEBUG)" == "yes"
+
+OPT_CXX_FLAGS=		/MDd $(OPT_P_USE_OLD_TYPES)
+
+!else
+
+OPT_CXX_FLAGS=		/MD $(OPT_P_USE_OLD_TYPES)
+
+!endif
+
+
+#--------
+# C++ compiler
+#--------
+CXXFLAGS=		-I. \
+			-I$(CORBA_UTIL_ROOT)\cxx\gsp \
+			-I$(CORBA_UTIL_ROOT)\cxx\import_export \
+			-I$(CORBA_UTIL_ROOT)\cxx\PolicyListParser \
+			-I$(CORBA_UTIL_ROOT)\cxx\PoaUtility \
+			-I$(CORBA_UTIL_ROOT)\cxx\portability \
+			-I$(ORBACUS_HOME)\include \
+			/Zi \
+			/nologo \
+			/GR \
+			/GX \
+			/W3 \
+			$(OPT_CXX_FLAGS) \
+			-DWIN32 \
+			-DP_USE_ORBACUS \
+			-DP_ORBACUS_VERSION=$(P_ORBACUS_VERSION) \
+			-DP_USE_WIN32_THREADS
+
+#--------
+# Generic build rules
+#--------
+.SUFFIXES:		.cxx
+
+.cxx.obj:
+	$(CXX) /c $(CXXFLAGS) $<

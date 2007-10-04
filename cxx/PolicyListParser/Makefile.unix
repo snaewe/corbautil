@@ -1,0 +1,22 @@
+#-----------------------------------------------------------------------
+# Copyright IONA Technologies 2002-2005. All rights reserved.
+# This software is provided "as is".
+#-----------------------------------------------------------------------
+
+include ../../Makefile.unix.inc
+
+#--------
+# Lists of files used by make rules.
+#--------
+OBJ =		PolicyListParser.o
+
+#--------
+# Rules
+#--------
+
+default:	all
+
+all:		$(OBJ)
+
+clean:
+	-rm -f *.o
